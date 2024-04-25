@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">VENDEDORES</h1> 
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 40px;">
+        <div class="d-grid gap-2">
+            <button type="button" name="btnCrear" id="btnCrear" class="btn btn-primary" onclick="mostrarFormulario()">CREAR</button>
+        </div>
+    </div>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>IDENTIFICACION</th>
+                            <th>NOMBRE</th>
+                            <th>TELEFONO</th>
+                            <th>VENTAS</th>
+                            <th>ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>1000019923</td>
+                            <td>CARLOS ANGARITA</td>
+                            <td>3043578293</td>
+                            <td>$20.000</td>
+                            <td>
+                                <a name="" id="" class="btn btn-primary" style="background:red;" href="#" role="button">ELIMINAR</a>
+                                <a name="" id="" class="btn btn-primary" style="background:orange;" href="#" role="button">EDITAR</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+
+<!-- Formulario flotante -->
+<div id="floatingForm" class="floating-form" style="display: none;">
+    <div class="form-container">
+        <span class="close-btn" onclick="cerrarFormulario()">&times;</span>
+        <h2>Agregar Vendedor</h2>
+        <form>
+            <div class="form-group">
+                <label for="identificacion">Identificación:</label>
+                <input type="text" id="identificacion" name="identificacion" placeholder="Número de identificación">
+            </div>
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" placeholder="Nombre del vendedor">
+            </div>
+            <div class="form-group">
+                <label for="telefono">Teléfono:</label>
+                <input type="text" id="telefono" name="telefono" placeholder="Número de teléfono">
+            </div>
+            <div class="form-group">
+                <label for="ventas">Ventas:</label>
+                <input type="text" id="ventas" name="ventas" placeholder="Ventas realizadas">
+            </div>
+            <button type="submit" class="btn btn-primary">Agregar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
