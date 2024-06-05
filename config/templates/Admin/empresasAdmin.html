@@ -1,0 +1,108 @@
+{% extends "Admin/PanelAdmin.html" %}
+{% block body %}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">EMPRESAS</h1> 
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 40px;">
+        <div class="d-grid gap-2">
+            <button type="button" name="btnCrear" id="btnCrear" class="btn btn-primary" onclick="mostrarFormulario()">CREAR</button>
+        </div>
+    </div>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+            
+                            <th>NOMBRE</th>
+                            <th>ESTADO</th>
+                            <th>PERIODO(MESES)</th>
+                            <th>ACCCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for empresa in empresa %}
+                        {% if loop.index % 1 == 0 %}
+                        <tr style="background-color: white;">
+                            {% else %}
+                        <tr>
+                            {% endif %}
+                        <tr>
+                            <td>{{ empresa.id }}</td>
+                            <td>{{ empresa.nombre }}</td>
+                            <td>{{ empresa.estado }}</td>
+                            
+                            <td>{{ empresa.periodo }}</td>
+                            <td>
+                                <button class="btn btn-primary btnEliminarEmpresa" style="background:red;" data-id="{{ empresa.id }}" >ELIMINAR</button>
+                                <button class="btn btn-primary btnEditar" style="background:orange;" data-id="{{ empresa.id }}" data-nombre="{{ empresa.nombre }}" data-estado="{{ empresa.estado }}" data-periodo="{{ empresa.periodo }}" onclick="mostrarFormularioEditar()">EDITAR</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+
+<!-- Formulario flotante -->
+<div id="floatingForm" class="floating-form" style="display: none;">
+    <div class="form-container">
+        <span class="close-btn" onclick="cerrarFormulario()">&times;</span>
+        <h2>Agregar Empresa</h2>
+     <form >
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="EmpresaNombre" name="nombre" placeholder="Nombre de la empresa" required="">
+            </div>
+
+            <div class="form-group">
+                <label for="nombre">Periodo:</label>
+                <input type="number" id="EmpresaPeriodo" name="nombre" placeholder="MESES" required="">
+            </div>
+            <div class="form-group">
+                <label for="estado">Estado:</label>
+                <select id="estado" name="estado">
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
+                </select>
+            </div>
+            <button type="submit" onclick="CrearEmpresa()" class="btn btn-primary">Agregar</button>
+        </form>
+    </div>
+</div>
+
+
+
+<div id="floatingFormEditar" class="floating-form" style="display: none;">
+    <div class="form-container">
+        <span class="close-btn" onclick="cerrarFormularioEditar()">&times;</span>
+        <h2>Agregar Empresa</h2>
+     <form >
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="EmpresaNombreEditar" name="nombre" placeholder="Nombre de la empresa" required="">
+            </div>
+
+            <div class="form-group">
+                <label for="nombre">Periodo:</label>
+                <input type="number" id="EmpresaPeriodoEditar" name="nombre" placeholder="MESES" required="">
+            </div>
+            <div class="form-group">
+                <label for="estado">Estado:</label>
+                <select id="estadoEditar" name="estadoEditar">
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
+                </select>
+            </div>
+            <button type="submit" onclick="EditarEmpresa()" class="btn btn-primary">Agregar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

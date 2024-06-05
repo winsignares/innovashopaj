@@ -1,0 +1,113 @@
+{% extends "Empresas/PanelEmpresas.html" %}
+{% block body %}
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">PRODUCTOS</h1>
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 40px;">
+        <div class="d-grid gap-2">
+            <button type="button" name="btnCrear" id="btnCrear" class="btn btn-primary" onclick="mostrarFormulario()">CREAR</button>
+
+        </div>
+    </div>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>PRODUCTO</th>
+                            <th>STOCK</th>
+                            <th>IMAGEN</th>
+                            <th>PRECIO</th>
+                            <th>ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for productos in productos %}
+                        {% if loop.index % 1 == 0 %}
+                        <tr style="background-color: white;">
+                            {% else %}
+                        <tr>
+                            {% endif %}
+                            <td>{{ productos.id }}</td>
+                            <td>{{ productos.producto }}</td>
+                            <td>{{ productos.stock }}</td>
+                            <td><img style="width: 80px;" src="{{url_for('static', filename ='img/producto.png')}}" alt=""></td>
+                            <td>{{ productos.precioFinal }}</td>
+                            <td style="display: flex; flex-direction: column-reverse;"> 
+                                <button class="btn btn-primary btnEliminar" style="background:red;" data-id="{{ productos.id }}" >ELIMINAR</button>
+                                <button class="btn btn-primary btnEditar" style="background:orange;" data-id="{{ productos.id }}" data-producto="{{ productos.producto }}" data-stock="{{ productos.stock }}" data-precio="{{ productos.precioFinal }}" onclick="mostrarFormularioEditar()">EDITAR</button>
+                                
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="floatingForm" class="floating-form">
+        <div class="form-container">
+            <span class="close-btn" onclick="cerrarFormulario()">&times;</span>
+            <h2>Agregar Producto</h2>
+            <form >
+                <div class="form-group">
+                    <label for="nombre">Producto:</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Nombre del producto" required="">
+                </div>
+                <div class="form-group">
+                    <label for="stock">Stock:</label>
+                    <input type="number" id="stock" name="stock" placeholder="Cantidad en stock" required="" >
+                </div>
+                <div class="form-group">
+                    <label for="precio">Precio:</label>
+                    <input type="text" id="precio" name="precio" placeholder="Precio del producto" required="">
+                </div>
+
+                <div class="form-group">
+                    <label for="categoria">Categoria:</label>
+                    <select name="categoria" id="categoria">
+                        <option value="GAMER">GAMER</option>
+                        <option value="COMPONENTES">COMPONENTES </option>
+                        <option value="ACCESORIOS">ACCESORIOS</option>                 
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" onclick="CrearProducto()">Agregar</button>
+            </form>
+        </div>
+    </div>
+    <!-- Formulario flotante para editar producto -->
+    <div id="floatingFormEditar" class="floating-form" style="display: none;">
+        <div class="form-container">
+            <span class="close-btn" onclick="cerrarFormularioEditar()">&times;</span>
+            <h2>Editar Producto</h2>
+            <div class="form-group">
+                <label for="nombreEditar">Producto:</label>
+                <input type="text" id="nombreEditar" name="nombreEditar" placeholder="Nombre del producto">
+            </div>
+            <div class="form-group">
+                <label for="stockEditar">Stock:</label>
+                <input type="number" id="stockEditar" name="stockEditar" placeholder="Cantidad en stock">
+            </div>
+            <div class="form-group">
+                <label for="imagenEditar">Imagen:</label>
+                <input type="text" id="imagenEditar" name="imagenEditar" placeholder="URL de la imagen">
+            </div>
+            <div class="form-group">
+                <label for="precioEditar">Precio:</label>
+                <input type="text" id="precioEditar" name="precioEditar" placeholder="Precio del producto">
+            </div>
+            <button type="submit" class="btn btn-primary" onclick="editarProducto()">Guardar Cambios</button>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+</div>
+{% endblock %}

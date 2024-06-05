@@ -1,0 +1,61 @@
+{% extends "Empresas/PanelEmpresas.html" %}
+{% block body %}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">INFORMES</h1>
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 40px;"></div>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3"></div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>IDENTIFICACION</th>
+                            <th>NOMBRE</th>
+                            <th>FACTURA</th>
+                            <th>ESTADO</th>
+                            <th>PDF</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for informe in informe %}
+                        <tr>
+                            <td>{{ informe.id }}</td>
+                            <td>{{ informe.identificacion }}</td>
+                            <td>{{ informe.nombre }}</td>
+                            <td>{{ informe.factura }}</td>
+                            <td>{{ informe.estado }}</td>
+                            <td>
+                                <a href="#" onclick="generarPDF({{ informe.id }})">
+                                    <img style="width: 30px;" src="{{ url_for('static', filename='img/pdf.png') }}" alt="">
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function generarPDF(informeId) {
+        axios.get(`/generar_pdf/${informeId}`)
+            .then(response => {
+                // Descargar el PDF
+                const blob = new Blob([response.data], { type: 'application/pdf' });
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = `Informe_${informeId}.pdf`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch(error => {
+                console.error('Error al generar PDF:', error);
+            });
+    }
+</script>
+{% endblock %}
