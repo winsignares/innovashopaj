@@ -12,3 +12,7 @@ def indexStock():
     stock = Stocks.query.all()
     return render_template("Stock.html")
 
+@ruta_Stock.route('/EmpresaStock')
+def EmpresaStock():
+    
+    return render_template("Empresas/stockEmpresas.html")

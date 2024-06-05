@@ -1,0 +1,152 @@
+{% extends "Admin/PanelAdmin.html" %}
+{% block body %}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">PARAMETROS</h1> 
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 40px;">
+       
+        <div class="d-grid gap-2" style="margin-left: 20px;">
+           
+        </div>
+    </div>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary"><h1 class="h3 mb-2 text-gray-800"></h1> </h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>CODIGO</th>
+                            <th>PRODUCTO</th>
+                            <th>PRECIO VENTA</th>
+                            <th>% GANANCIA</th>
+                            <th>% IVA</th>
+                            <th>PRECIO FINAL</th>
+                            <th>ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>2313213</td>
+                            <td>ARROZ</td>
+                            <td>$30.000</td>
+                            <td>%5</td>
+                            <td>%1.2</td>
+                            <td>$20.000</td>
+                            <td> <button type="button" name="btnModificar" id="btnModificar" class="btn btn-primary" onclick="mostrarFormularioModificar()">MODIFICAR</button></td>
+                        </tr>
+
+            
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+
+<!-- Formulario flotante para crear -->
+<div id="floatingForm" class="floating-form" style="display: none;">
+    <div class="form-container">
+        <span class="close-btn" onclick="cerrarFormulario()">&times;</span>
+        <h2>Crear Parámetro</h2>
+        <form>
+            <div class="form-group">
+                <label for="codigo">Código:</label>
+                <input type="text" id="codigo" name="codigo" placeholder="Código del parámetro">
+            </div>
+            <div class="form-group">
+                <label for="producto">Producto:</label>
+                <input type="text" id="producto" name="producto" placeholder="Nombre del producto">
+            </div>
+            <div class="form-group">
+                <label for="precioVenta">Precio Venta:</label>
+                <input type="text" id="precioVenta" name="precioVenta" placeholder="Precio de venta">
+            </div>
+            <div class="form-group">
+                <label for="ganancia">Porcentaje Ganancia:</label>
+                <input type="text" id="ganancia" name="ganancia" placeholder="% de ganancia">
+            </div>
+            <div class="form-group">
+                <label for="iva">Porcentaje IVA:</label>
+                <input type="text" id="iva" name="iva" placeholder="% de IVA">
+            </div>
+            <button type="submit" class="btn btn-primary">Crear</button>
+        </form>
+    </div>
+</div>
+
+
+
+<!-- Formulario flotante para modificar -->
+<div id="floatingFormModificar" class="floating-form" style="display: none;">
+    <div class="form-container">
+        <span class="close-btn" onclick="cerrarFormularioModificar()">&times;</span>
+        <h2>Modificar Parámetro</h2>
+        <form id="formularioModificar">
+            <div class="form-group">
+                <label for="codigo">Código:</label>
+                <input type="text" id="codigoModificar" name="codigoModificar" placeholder="Código del parámetro">
+            </div>
+            <div class="form-group">
+                <label for="producto">Producto:</label>
+                <input type="text" id="productoModificar" name="productoModificar" placeholder="Nombre del producto">
+            </div>
+            <div class="form-group">
+                <label for="precioVenta">Precio Venta:</label>
+                <input type="text" id="precioVentaModificar" name="precioVentaModificar" placeholder="Precio de venta">
+            </div>
+            <div class="form-group">
+                <label for="ganancia">Porcentaje Ganancia:</label>
+                <input type="text" id="gananciaModificar" name="gananciaModificar" placeholder="% de ganancia">
+            </div>
+            <div class="form-group">
+                <label for="iva">Porcentaje IVA:</label>
+                <input type="text" id="ivaModificar" name="ivaModificar" placeholder="% de IVA">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="enviarFormularioModificar()">Guardar Cambios</button>
+        </form>
+    </div>
+</div>
+<script>
+    function mostrarFormularioModificar() {
+        // Obtener los datos de la fila seleccionada
+        var fila = event.target.parentNode.parentNode;
+        var id = fila.cells[0].innerText;
+        var codigo = fila.cells[1].innerText;
+        var producto = fila.cells[2].innerText;
+        var precioVenta = fila.cells[3].innerText;
+        var ganancia = fila.cells[4].innerText;
+        var iva = fila.cells[5].innerText;
+
+        // Llenar los campos del formulario con los datos obtenidos
+        document.getElementById("codigoModificar").value = codigo;
+        document.getElementById("productoModificar").value = producto;
+        document.getElementById("precioVentaModificar").value = precioVenta;
+        document.getElementById("gananciaModificar").value = ganancia;
+        document.getElementById("ivaModificar").value = iva;
+
+        // Mostrar el formulario flotante para modificar
+        document.getElementById("floatingFormModificar").style.display = "block";
+    }
+
+    function cerrarFormularioModificar() {
+        // Ocultar el formulario flotante para modificar
+        document.getElementById("floatingFormModificar").style.display = "none";
+    }
+
+    function enviarFormularioModificar() {
+        // Aquí puedes implementar la lógica para enviar los datos del formulario modificado al servidor
+        // Por ejemplo, podrías hacer una solicitud AJAX para enviar los datos
+        // Una vez que los datos se han enviado y se ha recibido una respuesta exitosa, puedes cerrar el formulario
+        cerrarFormularioModificar();
+    }
+</script>
+
+
+
+{% endblock %}

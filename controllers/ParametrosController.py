@@ -1,6 +1,7 @@
-from flask import Blueprint, Flask, render_template, request
+from flask import Blueprint, Flask, render_template, request,jsonify,session
 from config.db import bd, ma, app
 from models.ParametrosModels import Parametros, ParametroSchema 
+from models.ProductosModels import Productos
 
 Parametros_schema = ParametroSchema()
 Parametros_schema = ParametroSchema(many=True)
@@ -13,3 +14,38 @@ def indexParametros():
     parametros = Parametros.query.all()
     return render_template("Parametros.html")
 
+
+@ruta_Parametros.route('/AdminParametros')
+def AdminParametros():
+
+    return render_template("Admin/parametrosAdmin.html")
+
+@ruta_Parametros.route('/EmpresaParametros')
+def EmpresaParametros():
+    empresa = session['empresa']
+    productos = Productos.query.filter_by(empresa=empresa).all()
+    return render_template("Empresas/parametrosEmpresas.html",productos=productos)
+
+
+@ruta_Parametros.route('/EditarParametros', methods=['POST'])
+def EditarParametros():
+    id = request.json['id']
+    producto = request.json['producto']
+    precio = request.json['precio']
+    ganancia = request.json['ganancia']
+    iva = request.json['iva']
+    PrecioFinal = request.json['PrecioFinal']
+    
+    try:
+        producto = Productos.query.get(id)
+        if producto:
+            producto.ganancia = ganancia
+            producto.iva = iva
+            producto.precioFinal = PrecioFinal
+            bd.session.commit()
+
+            return jsonify({'success': True, 'message': 'producto actualizado correctamente.'})
+        else:
+            return jsonify({'success': False, 'message': 'El Empresa no existe.'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': 'Error actualizando Empresa: ' + str(e)})

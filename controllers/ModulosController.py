@@ -8,3 +8,8 @@ ruta_Modulos = Blueprint("ruta_Modulos", __name__)
 def indexModulos():
     return render_template("Modulos.html")
 
+
+@ruta_Modulos.route('/AdminModulos')
+def AdminModulos():
+    return render_template("Admin/modulosAdmin.html")
+

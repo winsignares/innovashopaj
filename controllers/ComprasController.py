@@ -13,3 +13,13 @@ def indexCompras():
     compras = Compra.query.all()
     return render_template("Compras.html")
 
+@ruta_Compras.route('/EmpresaCompras')
+def EmpresaCompras():
+    
+    return render_template("Empresas/comprasEmpresas.html")
+
+
+@ruta_Compras.route('/VendedorCompras')
+def VendedorCompras():
+    
+    return render_template("Vendedor/comprasVendedor.html")

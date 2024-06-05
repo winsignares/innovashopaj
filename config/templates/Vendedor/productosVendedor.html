@@ -1,0 +1,331 @@
+{% extends "Vendedor/PanelVendedor.html" %}
+{% block body %}
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">PRODUCTOS</h1>
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 40px;">
+        <div class="d-grid gap-2">
+            <button type="button" name="btnCrear" id="btnCrear" class="btn btn-primary" onclick="mostrarFormulario()">CREAR</button>
+
+        </div>
+    </div>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>PRODUCTO</th>
+                            <th>STOCK</th>
+                            <th>IMAGEN</th>
+                            <th>PRECIO</th>
+                            <th>ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for productos in productos %}
+                        {% if loop.index % 1 == 0 %}
+                        <tr style="background-color: white;">
+                            {% else %}
+                        <tr>
+                            {% endif %}
+                            <td>{{ productos.id }}</td>
+                            <td>{{ productos.producto }}</td>
+                            <td>{{ productos.stock }}</td>
+                            <td><img style="width: 80px;" src="{{url_for('static', filename ='img/producto.png')}}" alt=""></td>
+                            <td>{{ productos.precioFinal }}</td>
+                            <td style="display: flex; flex-direction: column-reverse;"> 
+                                <button class="btn btn-primary btnEliminar" style="background:red;" data-id="{{ productos.id }}" >ELIMINAR</button>
+                                <button class="btn btn-primary btnEditar" style="background:orange;" data-id="{{ productos.id }}" data-producto="{{ productos.producto }}" data-stock="{{ productos.stock }}" data-precio="{{ productos.precioFinal }}" onclick="mostrarFormularioEditar()">EDITAR</button>
+                                
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="floatingForm" class="floating-form">
+        <div class="form-container">
+            <span class="close-btn" onclick="cerrarFormulario()">&times;</span>
+            <h2>Agregar Producto</h2>
+            
+                <div class="form-group">
+                    <label for="nombre">Producto:</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Nombre del producto" required="">
+                </div>
+                <div class="form-group">
+                    <label for="stock">Stock:</label>
+                    <input type="number" id="stock" name="stock" placeholder="Cantidad en stock" required="" >
+                </div>
+                <div class="form-group">
+                    <label for="precio">Precio:</label>
+                    <input type="text" id="precio" name="precio" placeholder="Precio del producto" required="">
+                </div>
+
+                <div class="form-group">
+                    <label for="categoria">Categoria:</label>
+                    <select name="categoria" id="categoria">
+                        <option value="ASEO">ASEO PERSONAL</option>
+                        <option value="ASEO">ASEO </option>
+                        
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" onclick="CrearProducto()">Agregar</button>
+         
+        </div>
+    </div>
+    <!-- Formulario flotante para editar producto -->
+    <div id="floatingFormEditar" class="floating-form" style="display: none;">
+        <div class="form-container">
+            <span class="close-btn" onclick="cerrarFormularioEditar()">&times;</span>
+            <h2>Editar Producto</h2>
+            <div class="form-group">
+                <label for="nombreEditar">Producto:</label>
+                <input type="text" id="nombreEditar" name="nombreEditar" placeholder="Nombre del producto">
+            </div>
+            <div class="form-group">
+                <label for="stockEditar">Stock:</label>
+                <input type="number" id="stockEditar" name="stockEditar" placeholder="Cantidad en stock">
+            </div>
+            <div class="form-group">
+                <label for="imagenEditar">Imagen:</label>
+                <input type="text" id="imagenEditar" name="imagenEditar" placeholder="URL de la imagen">
+            </div>
+            <div class="form-group">
+                <label for="precioEditar">Precio:</label>
+                <input type="text" id="precioEditar" name="precioEditar" placeholder="Precio del producto">
+            </div>
+            <button type="submit" class="btn btn-primary" onclick="editarProducto()">Guardar Cambios</button>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+</div>
+<script>
+
+function CrearProducto() {
+    let nombre = document.getElementById("nombre");
+    let stock = document.getElementById("stock");
+    let precio = document.getElementById("precio");
+    let categoria = document.getElementById("categoria");
+    let nameEmpresa = document.getElementById("name_empresa").innerText;
+
+    let NombreValor = nombre.value;
+    let StockValor = stock.value;
+    let PrecioValor = precio.value;
+    let categoriaValor = categoria.value;
+
+    if (NombreValor && StockValor && PrecioValor && categoriaValor )  {
+    let endpoint = "/controller/CrearProducto";
+
+    
+
+            axios.post(endpoint, {
+                'producto': NombreValor,
+                'stock': StockValor,
+                'precio': PrecioValor,
+                'empresa': nameEmpresa,
+                'categoria':categoriaValor
+            })
+            .then(function (response) {
+                console.log("Producto creado para la empresa: " + nameEmpresa);
+                console.log(response);
+            // window.location.reload();
+            })
+            .catch(function (error) {
+                console.error('Error creating product:', error);
+            });
+        }
+}
+
+
+document.querySelectorAll('.btnEliminar').forEach(item => {
+    item.addEventListener('click', event => {
+        const id = event.target.dataset.id; 
+        EliminarProducto(id); 
+    });
+});
+
+
+
+document.querySelectorAll('.btnEditar').forEach(item => {
+    item.addEventListener('click', event => {
+        const button = event.currentTarget;
+        const id = button.dataset.id;
+        const producto = button.dataset.producto;
+        const stock = button.dataset.stock;
+        const precio = button.dataset.precio;
+
+        console.log("ID:", id);
+        console.log("Producto:", producto);
+        console.log("Stock:", stock);
+        console.log("Precio:", precio);
+
+        mostrarFormularioEditar(id, producto, stock, precio);
+    });
+});
+
+function mostrarFormularioEditar(id, nombre, stock, precio) {
+    document.getElementById('floatingFormEditar').style.display = 'block';
+    document.getElementById('nombreEditar').value = nombre;
+    document.getElementById('stockEditar').value = stock;
+    document.getElementById('precioEditar').value = precio;
+
+    // Guardar el id del producto que se está editando
+    document.getElementById('floatingFormEditar').dataset.productId = id;
+}
+
+function cerrarFormularioEditar() {
+    document.getElementById('floatingFormEditar').style.display = 'none';
+}
+
+
+
+function editarProducto() {
+    const id = document.getElementById('floatingFormEditar').dataset.productId;
+    const nombre = document.getElementById('nombreEditar').value;
+    const stock = document.getElementById('stockEditar').value;
+    const precio = document.getElementById('precioEditar').value;
+    const imagen = document.getElementById('imagenEditar').value;
+
+    let endpoint = "/controller/EditarProducto";
+    
+    axios.post(endpoint, {
+        'id': id,
+        'nombre': nombre,
+        'stock': stock,
+        'precio': precio,
+        'imagen': imagen
+    })
+    .then(function (response) {
+        console.log("EDITADO: " + nombre);
+        window.location.reload();
+    })
+    .catch(function (error) {
+        console.error('Error EDITAR product:', error);
+    });
+}
+
+
+
+function EliminarProducto(id) {
+    let idDelete = id;
+    let endpoint = "/controller/EliminarProducto";
+    
+    axios.post(endpoint, {
+        'id': idDelete,
+    
+    })
+    .then(function (response) {
+        console.log("Producto Eliminado: " + idDelete );
+        window.location.reload();
+    })
+    .catch(function (error) {
+        console.error('Error creating product:', error);
+    });
+}
+
+
+
+
+function CrearVendedor() {
+    let identificacion = document.getElementById("identificacion").value;
+    let nombre = document.getElementById("nombre").value;
+    let telefono = document.getElementById("telefono").value;
+    let nameEmpresa = document.getElementById("name_empresa").innerText;
+
+    if (identificacion && nombre && telefono)  {
+    let endpoint = "/controller/CrearVendedor";
+
+    
+
+            axios.post(endpoint, {
+                'iden': identificacion,
+                'nombre': nombre,
+                'telefono': telefono,
+                'empresa': nameEmpresa
+    
+            })
+            .then(function (response) {
+                console.log("Producto creado para la empresa: " + nameEmpresa);
+                console.log(response);
+               window.location.reload();
+            })
+            .catch(function (error) {
+                console.error('Error creating product:', error);
+            });
+        }
+}
+
+
+document.querySelectorAll('.btnEliminar').forEach(item => {
+    item.addEventListener('click', event => {
+        const id = event.target.dataset.id; 
+        EliminarVendedor(id); 
+    });
+});
+
+
+function EliminarVendedor(id) {
+    let idDelete = id;
+    let endpoint = "/controller/EliminarVendedor";
+    
+    axios.post(endpoint, {
+        'id': idDelete,
+    
+    })
+    .then(function (response) {
+        console.log("Producto Eliminado: " + idDelete );
+        window.location.reload();
+    })
+    .catch(function (error) {
+        console.error('Error creating product:', error);
+    });
+}
+
+
+function crearCliente() {
+    let identifi = document.getElementById("ClientesCrearId").value;
+    let nombre = document.getElementById("ClientesCrearIdNombre").value;
+    let telefono = document.getElementById("ClientesCrearIdTelefono").value;
+    let nameEmpresa = document.getElementById("name_empresa").innerText;
+
+
+    if (identifi && nombre && telefono )  {
+    let endpoint = "/controller/CrearCliente";
+
+    
+
+            axios.post(endpoint, {
+                'ident': identifi,
+                'nombre': nombre,
+                'telefono': telefono,
+                'empresa':nameEmpresa
+
+            })
+            .then(function (response) {
+                console.log("Producto creado para la empresa: " + nameEmpresa);
+                console.log(response);
+                window.location.reload();
+            })
+            .catch(function (error) {
+                console.error('Error creating product:', error);
+            });
+        }
+    }
+
+
+
+
+   
+</script>
+{% endblock %}
